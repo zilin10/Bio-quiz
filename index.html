@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete 130-Question Biology Exam Review</title>
+  <style>
+    :root {
+      --bg: #111215;
+      --card-bg: #1a1c23;
+      --text: #e6e8ec;
+      --muted: #8b92a0;
+      --accent: #4e8cff;
+      --accent-hover: #3a75e0;
+      --border: #2a2e39;
+      --correct: #27ae60;
+      --incorrect: #e74c3c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .quiz-container {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      max-width: 720px;
+      width: 100%;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .header .progress {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .category-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      background-color: rgba(78, 140, 255, 0.12);
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .question-box {
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .option-btn {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 0.98rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1.4;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background-color: rgba(78, 140, 255, 0.08);
+    }
+
+    .option-btn.correct {
+      border-color: var(--correct);
+      background-color: rgba(39, 174, 96, 0.15);
+      color: #2ecc71;
+    }
+
+    .option-btn.incorrect {
+      border-color: var(--incorrect);
+      background-color: rgba(231, 76, 60, 0.15);
+      color: #ff6b6b;
+    }
+
+    .explanation-box {
+      display: none;
+      background-color: rgba(255, 255, 255, 0.04);
+      border-left: 4px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: #cbd2df;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .next-btn {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 24px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .next-btn:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .result-screen {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .result-screen h2 {
+      font-size: 1.75rem;
+      margin-bottom: 12px;
+    }
+
+    .result-screen p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .restart-btn {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container">
+    <div id="quiz-screen">
+      <div class="header">
+        <h1>130-Question Biology Review</h1>
+        <span class="progress" id="progress-text">Question 1 of 130</span>
+      </div>
+
+      <div class="category-badge" id="category-badge">Chapter 4</div>
+      <div class="question-box" id="question-text">Loading question...</div>
+      <div class="options-list" id="options-container"></div>
+      <div class="explanation-box" id="explanation-text"></div>
+
+      <div class="footer">
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+      </div>
+    </div>
+
+    <div class="result-screen" id="result-screen">
+      <h2>Review Complete!</h2>
+      <p id="score-text">You scored 0 out of 130.</p>
+      <button class="restart-btn" onclick="restartQuiz()">Restart Full Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      // Chapter 4 (1 - 77)
+      { cat: "Chapter 4", q: "What are the three core tenets of the cell theory?", o: ["All organisms are made of cells; Cells are the smallest living units; Cells arise from pre-existing cells", "Cells contain DNA; Cells divide by mitosis; All cells require oxygen", "Cells have walls; Cells have nuclei; Cells synthesize ATP", "Cells are spontaneous; Cells produce energy; Cells form tissues"], a: 0, exp: "Cell theory states all organisms have ≥1 cell, cells are the smallest living units, and cells come from pre-existing cells[cite: 1]." },
+      { cat: "Chapter 4", q: "What is the smallest living unit of life?", o: ["Atom", "Molecule", "Cell", "Tissue"], a: 2, exp: "The cell is the basic structural and smallest living unit of all organisms[cite: 1]." },
+      { cat: "Chapter 4", q: "Where do all cells originate from?", o: ["Spontaneous generation", "Pre-existing cells", "Abiotic chemical synthesis", "Extracellular matrix assembly"], a: 1, exp: "All living cells arise exclusively from pre-existing cells via cellular division[cite: 1]." },
+      { cat: "Chapter 4", q: "As a cell increases in size, which dimension increases more rapidly?", o: ["Surface area", "Volume", "Both increase equally", "Neither changes"], a: 1, exp: "As a cell expands, volume increases at a much faster rate than surface area[cite: 1]." },
+      { cat: "Chapter 4", q: "What is the semi-fluid matrix inside the cell where organelles are suspended?", o: ["Nucleoplasm", "Cytoplasm", "Stroma", "Middle lamella"], a: 1, exp: "The cytoplasm is the internal semi-fluid matrix suspending cellular organelles[cite: 1]." },
+      { cat: "Chapter 4", q: "Is the cytoplasm located on the inside or outside of the cell?", o: ["Inside", "Outside", "In the cell wall", "Extracellular space"], a: 0, exp: "The cytoplasm is located strictly in the interior of the cell enclosed by the membrane[cite: 1]." },
+      { cat: "Chapter 4", q: "What term denotes the minimum distance two points can be apart and still be distinguished as separate?", o: ["Magnification", "Refraction", "Resolution", "Contrast"], a: 2, exp: "Resolution defines the minimum distance at which two distinct points are distinguished as separate[cite: 1]." },
+      { cat: "Chapter 4", q: "Which general type of microscope possesses the strongest resolving power?", o: ["Electron microscope", "Light microscope", "Dissecting microscope", "Phase-contrast optical microscope"], a: 0, exp: "Electron microscopes exhibit far higher resolving power than optical/light microscopes[cite: 1]." },
+      { cat: "Chapter 4", q: "Which specific electron microscope provides the highest resolving power?", o: ["Scanning electron microscope", "Transmission electron microscope", "Fluorescence microscope", "Atomic force microscope"], a: 1, exp: "Transmission electron microscopes (TEM) offer the greatest resolving capability[cite: 1]." },
+      { cat: "Chapter 4", q: "What membrane molecule consists of a polar head and two nonpolar fatty acid tails?", o: ["Triglyceride", "Phospholipid", "Cholesterol", "Glycoprotein"], a: 1, exp: "Phospholipids have a hydrophilic polar head group and two hydrophobic fatty acid tails[cite: 1]." },
+      { cat: "Chapter 4", q: "How many layers of phospholipids form the fundamental plasma membrane structure?", o: ["One layer", "Two layers (bilayer)", "Three layers", "Four layers"], a: 1, exp: "The plasma membrane is organized as a lipid bilayer containing two phospholipid leaflets[cite: 1]." },
+      { cat: "Chapter 4", q: "What type of protein spans both sides of the bilayer to aid polar molecule transport?", o: ["Transmembrane protein", "Peripheral protein", "Surface protein", "Enzymatic receptor"], a: 0, exp: "Transmembrane proteins traverse the entire membrane, exposing domains on both sides[cite: 1]." },
+      { cat: "Chapter 4", q: "What proteins are located strictly on the exterior surface of the membrane?", o: ["Transmembrane proteins", "Surface membrane proteins", "Cytoskeletal tracks", "Channel proteins"], a: 1, exp: "Surface membrane proteins are bound to the surface rather than spanning the bilayer[cite: 1]." },
+      { cat: "Chapter 4", q: "Does the interior fatty acid region of the plasma membrane love or hate water?", o: ["Loves water", "Hates water", "Attracts ions", "Dissolves in water"], a: 1, exp: "The internal fatty acid tails are nonpolar and avoid water[cite: 1]." },
+      { cat: "Chapter 4", q: "What term describes the water-hating property of the membrane interior?", o: ["Hydrophilic", "Hydrophobic", "Amphipathic", "Osmotic"], a: 1, exp: "Hydrophobic means water-fearing or water-repelling[cite: 1]." },
+      { cat: "Chapter 4", q: "Does the polar head region of a phospholipid love or hate water?", o: ["Loves water", "Hates water", "Repels water", "Nonpolar"], a: 0, exp: "The phosphate head groups are polar and interact readily with aqueous solutions[cite: 1]." },
+      { cat: "Chapter 4", q: "What term describes the water-loving property of the polar heads?", o: ["Hydrophilic", "Hydrophobic", "Lipophilic", "Nonpolar"], a: 0, exp: "Hydrophilic denotes water-loving properties[cite: 1]." },
+      { cat: "Chapter 4", q: "What lipid found in the plasma membrane modulates its fluidity?", o: ["Triglyceride", "Cholesterol", "Phosphatidylcholine", "Glycolipid"], a: 1, exp: "Cholesterol intercalates within the bilayer to regulate membrane fluidity[cite: 1]." },
+      { cat: "Chapter 4", q: "What general category represents the simplest cellular organisms?", o: ["Eukaryotes", "Prokaryotes", "Fungi", "Protists"], a: 1, exp: "Prokaryotes represent the simplest, non-compartmentalized cells[cite: 1]." },
+      { cat: "Chapter 4", q: "What literal meaning does 'prokaryote' have regarding the nucleus ('the kernel')?", o: ["True kernel", "Before the kernel", "Without cells", "After the kernel"], a: 1, exp: "Prokaryote translates to 'before the kernel' (before the evolution of a true nucleus)[cite: 1]." },
+      { cat: "Chapter 4", q: "What cellular structure represents the 'kernel' in biological naming?", o: ["The nucleolus", "The nucleus", "The vacuole", "The mitochondrion"], a: 1, exp: "The kernel refers directly to the membrane-enclosed nucleus[cite: 1]." },
+      { cat: "Chapter 4", q: "What tiny structures perform protein synthesis in prokaryotic cells?", o: ["Lysosomes", "Ribosomes", "Peroxisomes", "Centrioles"], a: 1, exp: "Ribosomes translate mRNA to synthesize proteins across both prokaryotes and eukaryotes[cite: 1]." },
+      { cat: "Chapter 4", q: "Do prokaryotic ribosomes differ in structure from eukaryotic ribosomes?", o: ["Yes, they have different molecular structures", "No, they are 100% identical", "Prokaryotes do not have ribosomes", "Eukaryotes lack ribosomes"], a: 0, exp: "Prokaryotic ribosomes are structurally distinct (70S vs 80S in eukaryotes)[cite: 1]." },
+      { cat: "Chapter 4", q: "Which two domains of life fall under the mantle of prokaryotes?", o: ["Bacteria and Eukarya", "Bacteria and Archaea", "Archaea and Fungi", "Protista and Monera"], a: 1, exp: "Bacteria and Archaea make up the prokaryotic domains[cite: 1]." },
+      { cat: "Chapter 4", q: "What nucleic acid stores genetic material in bacteria?", o: ["RNA", "DNA", "ATP", "Polypeptides"], a: 1, exp: "Bacteria store their hereditary genetic material in double-stranded DNA[cite: 1]." },
+      { cat: "Chapter 4", q: "What sugar is found within the DNA backbone?", o: ["Ribose", "Deoxyribose", "Glucose", "Fructose"], a: 1, exp: "DNA contains the 5-carbon sugar deoxyribose[cite: 1]." },
+      { cat: "Chapter 4", q: "In what cytoplasmic region is bacterial DNA located?", o: ["Nucleolus", "Nucleoid region", "Nuclear envelope", "Stroma"], a: 1, exp: "Prokaryotes lack a nuclear envelope; their DNA resides in the nucleoid region[cite: 1]." },
+      { cat: "Chapter 4", q: "What surface appendages do prokaryotes use to attach to surfaces and exchange genes?", o: ["Cilia", "Pili (pilus)", "Flagella", "Centrioles"], a: 1, exp: "Pili (fimbriae) assist in attachment and conjugation/gene transfer[cite: 1]." },
+      { cat: "Chapter 4", q: "What defining structural feature distinguishes eukaryotic cells from prokaryotes?", o: ["Presence of DNA", "Membrane-bound organelles and a true nucleus", "Presence of a plasma membrane", "Capacity to synthesize ATP"], a: 1, exp: "Eukaryotes possess membrane-bound internal compartments and a membrane-enclosed nucleus[cite: 1]." },
+      { cat: "Chapter 4", q: "What rigid exterior structure surrounds plant cells but not animal cells?", o: ["Plasma membrane", "Cell wall", "Pellicle", "Extracellular matrix"], a: 1, exp: "Plant cells are surrounded by a cellulose-rich cell wall[cite: 1]." },
+      { cat: "Chapter 4", q: "What large, fluid-filled organelle occupies much of a plant cell interior?", o: ["Central vacuole", "Centriole", "Lysosome", "Peroxisome"], a: 0, exp: "The central vacuole occupies the major volume of mature plant cells[cite: 1]." },
+      { cat: "Chapter 4", q: "What primary function does the central vacuole serve in plant cells?", o: ["Protein translation", "Storage of water, nutrients, and waste", "Cell division", "ATP synthesis"], a: 1, exp: "The central vacuole functions primarily in fluid, ion, and nutrient storage[cite: 1]." },
+      { cat: "Chapter 4", q: "What photosynthetic organelles convert sunlight into chemical energy in plant cells?", o: ["Mitochondria", "Chloroplasts", "Chromoplasts", "Ribosomes"], a: 1, exp: "Chloroplasts capture radiant energy to perform photosynthesis[cite: 1]." },
+      { cat: "Chapter 4", q: "What primary function does the eukaryotic nucleus perform?", o: ["Degrading toxins", "Storing hereditary genetic information (DNA)", "Manufacturing lipids", "Pumping ions"], a: 1, exp: "The nucleus houses and protects eukaryotic genomic DNA[cite: 1]." },
+      { cat: "Chapter 4", q: "What double membrane bounds the surface of the nucleus?", o: ["Plasma membrane", "Nuclear envelope", "Thylakoid membrane", "Cristae"], a: 1, exp: "The nuclear envelope is a double membrane perforated by nuclear pores[cite: 1]." },
+      { cat: "Chapter 4", q: "What is the loose, uncoiled form of DNA called?", o: ["Chromosome", "Chromatin", "Histone", "Centromere"], a: 1, exp: "Chromatin is the relaxed, unwound state of DNA within the nucleus[cite: 1]." },
+      { cat: "Chapter 4", q: "What is the tightly condensed form of DNA called?", o: ["Chromatin", "Chromosome", "Nucleosome", "Chromatid"], a: 1, exp: "Chromosomes represent tightly condensed DNA packages visible during division[cite: 1]." },
+      { cat: "Chapter 4", q: "What dense structure located inside the nucleus synthesizes ribosomes?", o: ["Centrosome", "Nucleolus", "Golgi body", "Endoplasmic reticulum"], a: 1, exp: "The nucleolus is the site of ribosomal RNA transcription and ribosome assembly[cite: 1]." },
+      { cat: "Chapter 4", q: "What extensive system of internal membranes functions as the cell's manufacturing 'factory'?", o: ["Golgi complex", "Endoplasmic reticulum (ER)", "Cytoskeleton", "Lysosome"], a: 1, exp: "The endoplasmic reticulum synthesizes lipids, carbs, and proteins for export[cite: 1]." },
+      { cat: "Chapter 4", q: "What organelle acts as the 'Amazon' or shipping hub by packaging and distributing molecules?", o: ["Endoplasmic reticulum", "Golgi complex", "Lysosome", "Vacuole"], a: 1, exp: "The Golgi complex sorts, packages, and routes cellular products[cite: 1]." },
+      { cat: "Chapter 4", q: "What organelle produces chemical energy (ATP) using its inner membrane folds?", o: ["Chloroplast", "Mitochondria", "Peroxisome", "Nucleolus"], a: 1, exp: "Mitochondria generate the bulk of cellular ATP across their inner cristae[cite: 1]." },
+      { cat: "Chapter 4", q: "What common nickname is given to the mitochondria?", o: ["Command center", "Powerhouse of the cell", "Packaging plant", "Recycling bin"], a: 1, exp: "Mitochondria are universally nicknamed the powerhouse of the cell[cite: 1]." },
+      { cat: "Chapter 4", q: "What organelle contains digestive enzymes that degrade worn-out cell parts?", o: ["Peroxisome", "Lysosome", "Ribosome", "Centriole"], a: 1, exp: "Lysosomes contain acid hydrolases that digest worn-out cellular debris[cite: 1]." },
+      { cat: "Chapter 4", q: "What organelle contains enzymes that detoxify harmful oxidants and peroxides?", o: ["Lysosome", "Peroxisome", "Central vacuole", "Golgi complex"], a: 1, exp: "Peroxisomes neutralize oxidants and break down hydrogen peroxide[cite: 1]." },
+      { cat: "Chapter 4", q: "In what organelle does oxidative metabolism (cellular respiration) take place?", o: ["Chloroplast", "Mitochondria", "Nucleus", "Cytoplasm"], a: 1, exp: "Mitochondria host oxidative metabolism and cellular respiration[cite: 1]." },
+      { cat: "Chapter 4", q: "What are the folds of the inner mitochondrial membrane called?", o: ["Grana", "Cristae", "Stroma", "Cisternae"], a: 1, exp: "Cristae are the deep folds of the inner mitochondrial membrane[cite: 1]." },
+      { cat: "Chapter 4", q: "In what organelle does photosynthesis occur in eukaryotic cells?", o: ["Mitochondria", "Chloroplast", "Leucoplast", "Amyloplast"], a: 1, exp: "Chloroplasts conduct photosynthetic reactions[cite: 1]." },
+      { cat: "Chapter 4", q: "What two organelles are hypothesized to have originated via endosymbiosis?", o: ["Golgi and ER", "Mitochondria and chloroplasts", "Lysosomes and peroxisomes", "Nucleus and ribosome"], a: 1, exp: "Endosymbiosis explains the origin of mitochondria and chloroplasts from bacteria[cite: 1]." },
+      { cat: "Chapter 4", q: "What physical size comparison supports the endosymbiotic origin of mitochondria?", o: ["Same size as modern eukaryotic nuclei", "Same size as modern bacteria", "Same size as ribosomes", "Larger than whole cells"], a: 1, exp: "Mitochondria and chloroplasts share dimensions similar to modern prokaryotes[cite: 1]." },
+      { cat: "Chapter 4", q: "How many membrane layers do mitochondria and chloroplasts possess?", o: ["One", "Two (double membrane)", "Three", "None"], a: 1, exp: "Both organelles are enveloped by two distinct membrane bilayers[cite: 1]." },
+      { cat: "Chapter 4", q: "What shape of DNA is found inside mitochondria and chloroplasts?", o: ["Linear DNA", "Circular DNA", "Single-stranded RNA", "Triple helix"], a: 1, exp: "Mitochondria and chloroplasts contain closed circular prokaryotic-like DNA[cite: 1]." },
+      { cat: "Chapter 4", q: "From which parent is mitochondrial DNA inherited in humans?", o: ["Father", "Mother", "Both equally", "Random selection"], a: 1, exp: "Human mitochondrial DNA is maternally inherited through the egg[cite: 1]." },
+      { cat: "Chapter 4", q: "What type of ribosomes do mitochondria contain?", o: ["Eukaryotic 80S ribosomes", "Bacterial-like ribosomes", "Viral capsids", "They lack ribosomes"], a: 1, exp: "Mitochondrial ribosomes structurally resemble bacterial ribosomes[cite: 1]." },
+      { cat: "Chapter 4", q: "Which thin cytoskeletal filaments contract like a purse string to divide an animal cell?", o: ["Microtubules", "Actin filaments", "Intermediate filaments", "Myosin filaments"], a: 1, exp: "Actin microfilaments form the contractile ring during cytokinesis[cite: 1]." },
+      { cat: "Chapter 4", q: "What barrel-shaped structures assemble microtubules in animal cells?", o: ["Centrioles", "Lysosomes", "Vacuoles", "Kinetochores"], a: 0, exp: "Centrioles organize microtubule spindle fibers during animal cell division[cite: 1]." },
+      { cat: "Chapter 4", q: "Which two kingdoms of eukaryotic organisms lack centrioles?", o: ["Animals and plants", "Plants and fungi", "Protists and animals", "Fungi and bacteria"], a: 1, exp: "Centrioles are absent in plant cells and most fungi[cite: 1]." },
+      { cat: "Chapter 4", q: "What primary physical characteristic differentiates cilia from flagella?", o: ["Internal microtubule arrangement", "Length", "Membrane composition", "Origin site"], a: 1, exp: "Cilia are short and numerous; flagella are long and sparse[cite: 1]." },
+      { cat: "Chapter 4", q: "What structures serve as the 'train tracks' for intracellular transport?", o: ["Actin filaments", "Microtubules", "Intermediate filaments", "Nuclear lamina"], a: 1, exp: "Microtubules provide structural tracks for vesicles and organelles[cite: 1]." },
+      { cat: "Chapter 4", q: "What protein components attach transport vesicles to microtubule tracks?", o: ["Connector proteins", "Carrier proteins", "Histones", "Enzymes"], a: 0, exp: "Connector proteins cross-link cargo vesicles to motor molecules[cite: 1]." },
+      { cat: "Chapter 4", q: "What molecules provide mechanical stepping along microtubules using ATP?", o: ["Motor proteins (motor molecules)", "Phospholipids", "Surface proteins", "Actin fibers"], a: 0, exp: "Motor molecules (kinesin/dynein) consume ATP to move along microtubules[cite: 1]." },
+      { cat: "Chapter 4", q: "What layer glues adjacent plant cell walls together?", o: ["Secondary cell wall", "Middle lamella", "Primary cell wall", "Plasma membrane"], a: 1, exp: "The pectin-rich middle lamella cements neighboring plant walls together[cite: 1]." },
+      { cat: "Chapter 4", q: "What functions do plant cell walls provide?", o: ["ATP synthesis and respiration", "Protection, structural support, and cell shape", "Selective endocytosis", "DNA replication"], a: 1, exp: "Cell walls provide rigid structural defense and sustain cell shape[cite: 1]." },
+      { cat: "Chapter 4", q: "What extracellular layer is produced by glycoprotein secretions in animal cells?", o: ["Cell wall", "Extracellular matrix (ECM)", "Middle lamella", "Pellicle"], a: 1, exp: "Animal cells secrete a glycoprotein-rich extracellular matrix[cite: 1]." },
+      { cat: "Chapter 4", q: "What term describes the passive movement of molecules down a concentration gradient?", o: ["Active transport", "Simple diffusion", "Endocytosis", "Osmotic pumping"], a: 1, exp: "Simple diffusion is the spontaneous movement down a concentration gradient[cite: 1]." },
+      { cat: "Chapter 4", q: "Does passive transport require cellular energy expenditure?", o: ["Yes", "No", "Only at night", "Only for ions"], a: 1, exp: "Passive transport does not require ATP expenditure[cite: 1]." },
+      { cat: "Chapter 4", q: "Does active transport require cellular energy expenditure?", o: ["Yes", "No", "Only for water", "Never"], a: 0, exp: "Active transport directly or indirectly consumes cellular energy (ATP)[cite: 1]." },
+      { cat: "Chapter 4", q: "What transport mechanism requires both a carrier protein and ATP?", o: ["Facilitated diffusion", "Active transport", "Osmosis", "Simple diffusion"], a: 1, exp: "Active transport moves solutes against gradients via protein carriers using ATP[cite: 1]." },
+      { cat: "Chapter 4", q: "What endocytic process requires target molecules to bind membrane receptors first?", o: ["Pinocytosis", "Receptor-mediated endocytosis", "Phagocytosis", "Exocytosis"], a: 1, exp: "Receptor-mediated endocytosis is triggered by specific ligand binding[cite: 1]." },
+      { cat: "Chapter 4", q: "What does endocytosis mean?", o: ["Vesicle discharge outside the cell", "Substance intake into the cell via vesicles", "Cellular division", "Protein translation"], a: 1, exp: "Endocytosis internalizes material into the cell[cite: 1]." },
+      { cat: "Chapter 4", q: "What does exocytosis mean?", o: ["Internalizing nutrients", "Export/discharge of materials from the cell", "Engulfing whole bacteria", "Water diffusion"], a: 1, exp: "Exocytosis fuses internal vesicles with the membrane to secrete contents[cite: 1]." },
+      { cat: "Chapter 4", q: "What form of endocytosis involves the uptake of extracellular fluid droplets?", o: ["Phagocytosis", "Pinocytosis", "Trogocytosis", "Active transport"], a: 1, exp: "Pinocytosis ('cell drinking') internalizes liquid droplets non-specifically[cite: 1]." },
+      { cat: "Chapter 4", q: "What form of endocytosis involves tearing off and ingesting pieces of another cell?", o: ["Pinocytosis", "Trogocytosis", "Phagocytosis", "Receptor endocytosis"], a: 1, exp: "Trogocytosis describes cells nibbling or tearing off fragments of target cells[cite: 1]." },
+      { cat: "Chapter 4", q: "What form of endocytosis involves engulfing large particles or whole cells?", o: ["Pinocytosis", "Phagocytosis", "Exocytosis", "Osmosis"], a: 1, exp: "Phagocytosis ('cell eating') engulfs large, intact particles into vesicles[cite: 1]." },
+      { cat: "Chapter 4", q: "Why does diffusion naturally occur?", o: ["Due to ATP consumption", "Due to the random thermal motion of molecules", "Due to electrical fields", "Due to nuclear pores"], a: 1, exp: "Diffusion is driven by the intrinsic random kinetic motion of particles[cite: 1]." },
+      { cat: "Chapter 4", q: "What effect does increasing temperature have on the rate of diffusion?", o: ["Decreases the rate", "Increases the rate", "Stops diffusion", "No effect"], a: 1, exp: "Higher temperatures raise kinetic energy, accelerating the rate of diffusion[cite: 1]." },
+      { cat: "Chapter 4", q: "What effect does a steeper concentration gradient have on diffusion rate?", o: ["Slows it down", "Increases the rate", "Causes equilibrium immediately", "Stops molecular motion"], a: 1, exp: "A steeper gradient drives a faster net rate of diffusion[cite: 1]." },
+      { cat: "Chapter 4", q: "What is the diffusion of water across a semipermeable membrane down its gradient called?", o: ["Active pumping", "Osmosis", "Chemiosmosis", "Pinocytosis"], a: 1, exp: "Osmosis refers specifically to the passive net diffusion of water molecules[cite: 1]." },
+
+      // Chapter 5 (78 - 109)
+      { cat: "Chapter 5", q: "What type of energy is possessed by objects in motion?", o: ["Potential energy", "Kinetic energy", "Chemical energy", "Activation energy"], a: 1, exp: "Kinetic energy is the energy of motion[cite: 1]." },
+      { cat: "Chapter 5", q: "What type of energy is stored by an object resting at a precipice or in chemical bonds?", o: ["Kinetic energy", "Potential energy", "Thermal energy", "Entropy"], a: 1, exp: "Potential energy is stored energy capable of doing future work[cite: 1]." },
+      { cat: "Chapter 5", q: "How is energy fundamentally defined in biological systems?", o: ["The capacity to create matter", "The ability to do work", "The production of heat", "The movement of light"], a: 1, exp: "Energy is defined as the capacity to do work[cite: 1]." },
+      { cat: "Chapter 5", q: "What type of energy is contained within chemical bonds?", o: ["Kinetic energy", "Potential energy", "Nuclear energy", "Free radical energy"], a: 1, exp: "Chemical bonds store potential energy[cite: 1]." },
+      { cat: "Chapter 5", q: "Into what universal form can all types of energy eventually be converted?", o: ["Light", "Heat", "Sound", "Electricity"], a: 1, exp: "All forms of energy can ultimately dissipate into heat[cite: 1]." },
+      { cat: "Chapter 5", q: "What is the study of energy transformations called?", o: ["Electrodynamics", "Thermodynamics", "Biochemistry", "Enzymology"], a: 1, exp: "Thermodynamics is the branch of physics and chemistry studying energy transitions[cite: 1]." },
+      { cat: "Chapter 5", q: "Where does the primary influx of biological energy on Earth originate?", o: ["Geothermal vents", "The Sun", "Ocean currents", "Chemical bonds of rocks"], a: 1, exp: "Sunlight is the ultimate energy source driving the biological realm[cite: 1]." },
+      { cat: "Chapter 5", q: "Which group of factors directly influences the catalytic activity of enzymes?", o: ["Gravity, friction, mass", "pH, temperature, substrate concentration, inhibitors", "Light wavelength, magnetism, volume", "DNA length, RNA splicing"], a: 1, exp: "Enzyme activity is strongly modulated by pH, temperature, reactants, and regulators[cite: 1]." },
+      { cat: "Chapter 5", q: "What is a reaction called where exergonic ATP cleavage drives an endergonic process?", o: ["Single displacement", "Coupled reaction", "Dehydration synthesis", "Redox neutralization"], a: 1, exp: "Coupled reactions link exergonic ATP breakdown to power endergonic steps[cite: 1]." },
+      { cat: "Chapter 5", q: "What broad metabolic pathway converts potential energy in food into cellular ATP?", o: ["Photosynthesis", "Cellular respiration", "Fermentation only", "Hydrolysis"], a: 1, exp: "Cellular respiration oxidizes organic food molecules to synthesize ATP[cite: 1]." },
+      { cat: "Chapter 5", q: "Which cellular activities require ATP energy expenditure?", o: ["Diffusion and osmosis", "Organelle transport, locomotion, and biosynthesis", "Passive filtration", "Brownian motion"], a: 1, exp: "Movement, active transport, and biosynthesis consume ATP[cite: 1]." },
+      { cat: "Chapter 5", q: "What happens to enzymes when exposed to excessive heat beyond their optimum?", o: ["They freeze", "They denature (unfold)", "They divide", "They increase activity indefinitely"], a: 1, exp: "Excessive heat disrupts weak bonds, causing the protein structure to denature[cite: 1]." },
+      { cat: "Chapter 5", q: "What are the three structural components of an ATP molecule?", o: ["Adenine base, ribose sugar, three phosphate groups", "Guanine base, deoxyribose, two phosphates", "Cytosine, glucose, one phosphate", "Thymine, ribose, three nitrates"], a: 0, exp: "ATP consists of adenine, a 5-carbon ribose, and a triphosphate chain[cite: 1]." },
+      { cat: "Chapter 5", q: "What nitrogenous base is present within ATP?", o: ["Uracil", "Adenine", "Guanine", "Thymine"], a: 1, exp: "Adenine is the purine nitrogenous base in ATP[cite: 1]." },
+      { cat: "Chapter 5", q: "How many phosphate groups are bound to ATP?", o: ["One", "Two", "Three", "Four"], a: 2, exp: "ATP contains three phosphate groups (adenosine triphosphate)[cite: 1]." },
+      { cat: "Chapter 5", q: "What 5-carbon sugar is present in ATP?", o: ["Deoxyribose", "Ribose", "Glucose", "Sucrose"], a: 1, exp: "The pentose sugar in ATP is ribose[cite: 1]." },
+      { cat: "Chapter 5", q: "What does the First Law of Thermodynamics state?", o: ["Entropy always decreases", "Energy cannot be created or destroyed, only transformed", "All reactions require ATP", "Energy flows only backward"], a: 1, exp: "The First Law states the total energy of the universe remains constant[cite: 1]." },
+      { cat: "Chapter 5", q: "What does the Second Law of Thermodynamics state?", o: ["Disorder (entropy) in a closed system continuously increases", "Energy is destroyed during work", "Reactions never release heat", "Matter turns into energy"], a: 0, exp: "The Second Law dictates entropy continuously increases over time[cite: 1]." },
+      { cat: "Chapter 5", q: "What property does entropy measure in a system?", o: ["Total enthalpy", "Disorder or chaos", "Catalytic velocity", "Heat capacity"], a: 1, exp: "Entropy measures the degree of randomness or disorder in a system[cite: 1]." },
+      { cat: "Chapter 5", q: "What term classifies chemical reactions that release energy spontaneously?", o: ["Endergonic", "Exergonic", "Anabolic", "Endothermic"], a: 1, exp: "Exergonic reactions release free energy and proceed spontaneously[cite: 1]." },
+      { cat: "Chapter 5", q: "What term classifies chemical reactions that require an input of free energy?", o: ["Exergonic", "Endergonic", "Catabolic", "Spontaneous"], a: 1, exp: "Endergonic reactions absorb energy and require external thermodynamic input[cite: 1]." },
+      { cat: "Chapter 5", q: "What process lowers the activation energy of a chemical reaction using an agent?", o: ["Phosphorylation", "Catalysis", "Denaturation", "Fermentation"], a: 1, exp: "Catalysis accelerates reaction rates by reducing activation energy thresholds[cite: 1]." },
+      { cat: "Chapter 5", q: "What is the initial energy input required to destabilize chemical bonds called?", o: ["Free energy", "Activation energy", "Thermal entropy", "Kinetic barrier"], a: 1, exp: "Activation energy is the barrier required to initiate bond reorganization[cite: 1]." },
+      { cat: "Chapter 5", q: "What is the specific region on an enzyme where the substrate binds?", o: ["Allosteric site", "Active site", "Binding pocket on reactant", "Catalytic groove on DNA"], a: 1, exp: "The active site is the precise cleft on an enzyme where substrate binding occurs[cite: 1]." },
+      { cat: "Chapter 5", q: "What is the region on the reactant molecule that interacts with an enzyme called?", o: ["Active site", "Binding site", "Inhibitor pocket", "Enzymatic cleft"], a: 1, exp: "The binding site is the region on the reactant substrate interacting with the enzyme[cite: 1]." },
+      { cat: "Chapter 5", q: "In a biochemical pathway, what does the product of reaction 1 become for reaction 2?", o: ["The enzyme", "The reactant (substrate)", "The noncompetitive inhibitor", "The solvent"], a: 1, exp: "Products of upstream reactions serve directly as substrates for subsequent steps[cite: 1]." },
+      { cat: "Chapter 5", q: "What mechanism allows the end-product of a pathway to turn off its own initial enzyme?", o: ["Positive feedback", "Feedback inhibition", "Competitive activation", "Thermal denaturation"], a: 1, exp: "Feedback inhibition shuts down early pathway enzymes when end-product levels rise[cite: 1]." },
+      { cat: "Chapter 5", q: "How does an allosteric repressor inhibit enzyme function?", o: ["By binding directly inside the active site", "By binding a secondary site and altering active site shape", "By degrading the substrate", "By hydrolyzing ATP"], a: 1, exp: "Allosteric repressors bind elsewhere to deform the active site conformation[cite: 1]." },
+      { cat: "Chapter 5", q: "What molecule binds an enzyme to restore an active binding site conformation?", o: ["Repressor", "Activator", "Competitive inhibitor", "Denaturant"], a: 1, exp: "Allosteric activators stabilize an enzyme into its active functional conformation[cite: 1]." },
+      { cat: "Chapter 5", q: "How does a competitive inhibitor block enzyme catalysis?", o: ["By altering primary protein structure", "By binding directly to the active site to physically block the substrate", "By heating the system", "By hydrolyzing the cofactor"], a: 1, exp: "Competitive inhibitors mimic substrates and physically occupy active sites[cite: 1]." },
+      { cat: "Chapter 5", q: "Why can a sustained body temperature of 104°F be fatal in humans?", o: ["Blood boils", "Essential metabolic enzymes denature and cease functioning", "Cell walls rupture", "DNA dissolves"], a: 1, exp: "High fevers denature critical catalytic enzymes, arresting vital metabolic processes[cite: 1]." },
+      { cat: "Chapter 5", q: "Breaking which chemical bonds in ATP releases energy to drive cellular work?", o: ["Carbon-carbon bonds", "Bonds between the phosphate groups", "Nitrogenous ring bonds", "Hydrogen bonds in ribose"], a: 1, exp: "Hydrolyzing the high-energy terminal phosphoanhydride bonds yields usable work[cite: 1]." },
+
+      // Chapter 6 (110 - 130)
+      { cat: "Chapter 6", q: "Which organisms are capable of performing photosynthesis?", o: ["Animals and fungi", "Plants, algae, cyanobacteria, and some protists", "Viruses and archaea", "Insects and protozoa"], a: 1, exp: "Photosynthesis occurs across plants, algae, certain bacteria, and protists[cite: 1]." },
+      { cat: "Chapter 6", q: "Approximately what percentage of sunlight energy is captured by autotrophs?", o: ["1% or less", "10%", "50%", "99%"], a: 0, exp: "Less than 1% of incoming solar radiant energy is captured by photosynthetic autotrophs[cite: 1]." },
+      { cat: "Chapter 6", q: "What are stacked columns of thylakoids called?", o: ["Stroma", "Grana", "Cristae", "Cisternae"], a: 1, exp: "Grana are the cylindrical stacks of disk-like thylakoids inside chloroplasts[cite: 1]." },
+      { cat: "Chapter 6", q: "If a pigment appears red to the human eye, is it absorbing or reflecting red light?", o: ["Absorbing red light", "Reflecting red light", "Destroying red light", "Refracting UV light"], a: 1, exp: "Pigments display colors corresponding to wavelengths they reflect, not absorb[cite: 1]." },
+      { cat: "Chapter 6", q: "By what gradient-driven mechanism is ATP synthesized in light-dependent reactions?", o: ["Substrate-level phosphorylation", "Chemiosmosis", "Fermentation", "Active phagocytosis"], a: 1, exp: "Chemiosmosis harnesses proton concentration gradients to synthesize ATP[cite: 1]." },
+      { cat: "Chapter 6", q: "What energetic particles power the proton pumps of the thylakoid membrane?", o: ["Photons directly", "Energetic electrons passing down the ETS", "ATP molecules", "NADPH ions"], a: 1, exp: "Excited electrons moving down the electron transport chain power H+ pumping[cite: 1]." },
+      { cat: "Chapter 6", q: "What is the fluid-filled space surrounding thylakoids in chloroplasts called?", o: ["Cytosol", "Stroma", "Matrix", "Intermembrane lumen"], a: 1, exp: "The stroma is the semi-fluid chamber enclosing thylakoids where the Calvin cycle occurs[cite: 1]." },
+      { cat: "Chapter 6", q: "How many molecules of carbon dioxide are needed to synthesize one glucose molecule?", o: ["One", "Three", "Six", "Twelve"], a: 2, exp: "Six CO2 molecules are required to supply the carbons for one 6-carbon glucose[cite: 1]." },
+      { cat: "Chapter 6", q: "How many complete turns of the Calvin cycle generate one glucose molecule?", o: ["Two", "Three", "Six", "Twelve"], a: 2, exp: "Six turns of the Calvin cycle are needed to output one glucose[cite: 1]." },
+      { cat: "Chapter 6", q: "What reactant provides the source of atmospheric oxygen released during photosynthesis?", o: ["Carbon dioxide (CO2)", "Water (H2O)", "Glucose", "Chlorophyll"], a: 1, exp: "Photolysis splits water (H2O), yielding oxygen gas as a byproduct[cite: 1]." },
+      { cat: "Chapter 6", q: "What wasteful process occurs when rubisco fixes oxygen instead of carbon dioxide?", o: ["Cellular respiration", "Photorespiration", "Fermentation", "Chemiosmosis"], a: 1, exp: "Photorespiration occurs when rubisco fixes O2 under low internal CO2 levels[cite: 1]." },
+      { cat: "Chapter 6", q: "What leaf structures open and close to regulate gas exchange and water loss?", o: ["Thylakoids", "Stomata", "Grana", "Lenticels"], a: 1, exp: "Stomata are specialized epidermal pores that modulate gas exchange and transpiration[cite: 1]." },
+      { cat: "Chapter 6", q: "Into what 4-carbon compound do C4 plants initially fix carbon dioxide?", o: ["Pyruvate", "Oxaloacetate (OAA)", "Citrate", "Malate"], a: 1, exp: "C4 plants fix carbon dioxide into oxaloacetate to reduce photorespiration[cite: 1]." },
+      { cat: "Chapter 6", q: "What happens to ADP after its phosphate bond is utilized in the Calvin cycle?", o: ["It is destroyed", "It is recycled back to the light-dependent reactions", "It enters the nucleus", "It becomes glucose"], a: 1, exp: "ADP and NADP+ return to the thylakoids to be recharged during light reactions[cite: 1]." },
+      { cat: "Chapter 6", q: "What are the light-gathering antenna complexes embedded in the thylakoid called?", o: ["Photosystems", "Cristae", "Stomata", "Electron carriers"], a: 0, exp: "Photosystems are pigment-protein networks that harvest photon excitation energy[cite: 1]." },
+      { cat: "Chapter 6", q: "What specialized chlorophyll molecule acts as the reaction center in a photosystem?", o: ["Carotenoid center", "Reaction center chlorophyll", "Rubisco", "Cytochrome"], a: 1, exp: "Excitation energy is shuttled to a specialized reaction center chlorophyll molecule[cite: 1]." },
+      { cat: "Chapter 6", q: "Which photosystem acts first in non-cyclic light reactions?", o: ["Photosystem I", "Photosystem II", "Photosystem III", "Cytochrome complex"], a: 1, exp: "Photosystem II acts first, passing electrons onward to Photosystem I[cite: 1]." },
+      { cat: "Chapter 6", q: "What reduced electron carrier is produced downstream of Photosystem I for the Calvin cycle?", o: ["NADH", "NADPH", "FADH2", "ATP synthase"], a: 1, exp: "Photosystem I energizes electrons to reduce NADP+ into NADPH[cite: 1]." },
+      { cat: "Chapter 6", q: "What two products from light reactions supply energy to drive the Calvin cycle?", o: ["Glucose and O2", "ATP and NADPH", "Water and CO2", "Pyruvate and FADH2"], a: 1, exp: "ATP and NADPH from light reactions power carbon fixation in the stroma[cite: 1]." },
+      { cat: "Chapter 6", q: "How many turns of the Calvin cycle produce one 3-carbon G3P molecule?", o: ["One", "Two", "Three", "Six"], a: 2, exp: "Three turns of the cycle yield one net molecule of G3P[cite: 1]." },
+      { cat: "Chapter 6", q: "What enzyme fixes carbon dioxide and is considered the most abundant protein on Earth?", o: ["ATP synthase", "Rubisco", "Pyruvate dehydrogenase", "Amylase"], a: 1, exp: "Rubisco catalyzes the primary carbon fixation reaction of the Calvin cycle[cite: 1]." }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const quizScreen = document.getElementById("quiz-screen");
+    const resultScreen = document.getElementById("result-screen");
+    const progressText = document.getElementById("progress-text");
+    const categoryBadge = document.getElementById("category-badge");
+    const questionText = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const explanationText = document.getElementById("explanation-text");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreText = document.getElementById("score-text");
+
+    function loadQuestion() {
+      const q = questions[currentQuestionIndex];
+      progressText.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+      categoryBadge.textContent = q.cat;
+      questionText.textContent = q.q;
+      optionsContainer.innerHTML = "";
+      explanationText.style.display = "none";
+      nextBtn.style.display = "none";
+
+      q.o.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = opt;
+        btn.onclick = () => selectOption(idx);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(selectedIdx) {
+      const q = questions[currentQuestionIndex];
+      const buttons = optionsContainer.querySelectorAll(".option-btn");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedIdx === q.a) {
+        buttons[selectedIdx].classList.add("correct");
+        score++;
+      } else {
+        buttons[selectedIdx].classList.add("incorrect");
+        buttons[q.a].classList.add("correct");
+      }
+
+      explanationText.textContent = q.exp;
+      explanationText.style.display = "block";
+      nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      quizScreen.style.display = "none";
+      resultScreen.style.display = "block";
+      const pct = Math.round((score / questions.length) * 100);
+      scoreText.textContent = `You scored ${score} out of ${questions.length} (${pct}%).`;
+    }
+
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      resultScreen.style.display = "none";
+      quizScreen.style.display = "block";
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
